@@ -28,11 +28,17 @@ public class DorisConnectionOptions implements Serializable {
     private static final long serialVersionUID = 1L;
 
     protected final String fenodes;
+    protected final String benodes;
     protected final String username;
     protected final String password;
 
     public DorisConnectionOptions(String fenodes, String username, String password) {
+        this(fenodes, null, username, password);
+    }
+
+    public DorisConnectionOptions(String fenodes, String benodes, String username, String password) {
         this.fenodes = Preconditions.checkNotNull(fenodes, "fenodes  is empty");
+        this.benodes = benodes;
         this.username = username;
         this.password = password;
     }
@@ -49,16 +55,25 @@ public class DorisConnectionOptions implements Serializable {
         return password;
     }
 
+    public String getBenodes() {
+        return benodes;
+    }
+
     /**
      * Builder for {@link DorisConnectionOptions}.
      */
     public static class DorisConnectionOptionsBuilder {
         private String fenodes;
+        private String benodes;
         private String username;
         private String password;
 
         public DorisConnectionOptionsBuilder withFenodes(String fenodes) {
             this.fenodes = fenodes;
+            return this;
+        }
+        public DorisConnectionOptionsBuilder withBenodes(String benodes) {
+            this.benodes = benodes;
             return this;
         }
 
@@ -73,7 +88,7 @@ public class DorisConnectionOptions implements Serializable {
         }
 
         public DorisConnectionOptions build() {
-            return new DorisConnectionOptions(fenodes, username, password);
+            return new DorisConnectionOptions(fenodes, benodes, username, password);
         }
     }
 

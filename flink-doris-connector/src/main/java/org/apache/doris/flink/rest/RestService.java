@@ -275,7 +275,21 @@ public class RestService implements Serializable {
      */
     @VisibleForTesting
     public static String randomBackend(DorisOptions options, DorisReadOptions readOptions, Logger logger) throws DorisException, IOException {
-        List<BackendV2.BackendRowV2> backends = getBackendsV2(options, readOptions, logger);
+        List<BackendV2.BackendRowV2> backends = null;
+        if (StringUtils.isNotBlank(options.getBenodes())) {
+            backends = Arrays.stream(options.getBenodes().split(",")).map(
+                    item -> {
+                        String[] hostPort = item.split(":");
+                        BackendV2.BackendRowV2 rowV2 = new BackendV2.BackendRowV2();
+                        rowV2.setIp(hostPort[0]);
+                        rowV2.setHttpPort(Integer.parseInt(hostPort[1]));
+                        rowV2.setAlive(true);
+                        return rowV2;
+                    }
+            ).collect(Collectors.toList());
+        } else {
+            backends = getBackendsV2(options, readOptions, logger);
+        }
         logger.trace("Parse beNodes '{}'.", backends);
         if (backends == null || backends.isEmpty()) {
             logger.error(ILLEGAL_ARGUMENT_MESSAGE, "beNodes", backends);
@@ -301,9 +315,9 @@ public class RestService implements Serializable {
      * @param logger  slf4j logger
      * @return the chosen one Doris BE node
      * @throws IllegalArgumentException BE nodes is illegal
-     *
-     * This method is deprecated. Because it needs ADMIN_PRIV to get backends, which is not suitable for common users.
-     * Use getBackendsV2 instead
+     *                                  <p>
+     *                                  This method is deprecated. Because it needs ADMIN_PRIV to get backends, which is not suitable for common users.
+     *                                  Use getBackendsV2 instead
      */
     @Deprecated
     @VisibleForTesting
@@ -359,7 +373,7 @@ public class RestService implements Serializable {
     static List<BackendV2.BackendRowV2> getBackendsV2(DorisOptions options, DorisReadOptions readOptions, Logger logger) throws DorisException, IOException {
         String feNodes = options.getFenodes();
         List<String> feNodeList = allEndpoints(feNodes, logger);
-        for (String feNode: feNodeList) {
+        for (String feNode : feNodeList) {
             try {
                 String beUrl = "http://" + feNode + BACKENDS_V2;
                 HttpGet httpGet = new HttpGet(beUrl);
@@ -447,6 +461,7 @@ public class RestService implements Serializable {
             throw new DorisRuntimeException(e);
         }
     }
+
     /**
      * translate Doris FE response to inner {@link Schema} struct.
      *

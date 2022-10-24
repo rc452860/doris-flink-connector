@@ -20,6 +20,7 @@ package org.apache.doris.flink.cfg;
 public interface ConfigurationOptions {
     // doris fe node address
     String DORIS_FENODES = "fenodes";
+    String DORIS_BENODES = "benodes";
 
     String DORIS_DEFAULT_CLUSTER = "default_cluster";
 

@@ -42,6 +42,7 @@ public class DorisStreamOptions implements Serializable {
     private void init() {
         DorisOptions.Builder optionsBuilder = DorisOptions.builder()
                 .setFenodes(prop.getProperty(ConfigurationOptions.DORIS_FENODES))
+                .setBenodes(prop.getProperty(ConfigurationOptions.DORIS_BENODES))
                 .setUsername(prop.getProperty(ConfigurationOptions.DORIS_USER))
                 .setPassword(prop.getProperty(ConfigurationOptions.DORIS_PASSWORD))
                 .setTableIdentifier(prop.getProperty(ConfigurationOptions.TABLE_IDENTIFIER));

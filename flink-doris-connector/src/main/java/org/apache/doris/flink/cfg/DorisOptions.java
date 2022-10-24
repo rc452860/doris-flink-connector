@@ -37,6 +37,11 @@ public class DorisOptions extends DorisConnectionOptions {
         this.tableIdentifier = tableIdentifier;
     }
 
+    public DorisOptions(String fenodes, String benodes, String username, String password, String tableIdentifier) {
+        super(fenodes, benodes, username, password);
+        this.tableIdentifier = tableIdentifier;
+    }
+
     public String getTableIdentifier() {
         return tableIdentifier;
     }
@@ -55,6 +60,7 @@ public class DorisOptions extends DorisConnectionOptions {
      */
     public static class Builder {
         private String fenodes;
+        private String benodes;
         private String username;
         private String password;
         private String tableIdentifier;
@@ -91,11 +97,16 @@ public class DorisOptions extends DorisConnectionOptions {
             return this;
         }
 
+        public Builder setBenodes(String benodes) {
+            this.benodes = benodes;
+            return this;
+        }
+
 
         public DorisOptions build() {
             checkNotNull(fenodes, "No fenodes supplied.");
             checkNotNull(tableIdentifier, "No tableIdentifier supplied.");
-            return new DorisOptions(fenodes, username, password, tableIdentifier);
+            return new DorisOptions(fenodes, benodes, username, password, tableIdentifier);
         }
     }
 
